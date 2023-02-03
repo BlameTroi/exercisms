@@ -24,4 +24,4 @@ My solutions to various problems aren't particularly good or bad. Sometimes I go
 
 My code is public domain if anyone wants it. The parts from exercism maintain their license rights and restrictions.
 
-Troy Brumley, February 2022.
+Troy Brumley, February 2023.
