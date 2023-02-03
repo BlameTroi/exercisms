@@ -1,0 +1,27 @@
+* Exercisms
+
+The exercism.io site provides small exercise problems to be solved using a computer programming language. The problems include a testing framework to verify results.
+
+I periodically do a few of these on language tracks that interest me. Whitling for the mind.
+
+[[./whittling.jpg]]
+
+** Criticisms
+
+I have a few problems with the exercises and testing methodology.
+
+1. Exercises are often poorly chosen or presented for a particular langue. A few on the go track even got some comments from one of the mentors.
+
+2. The tests are written to validate your answers, not to support learning.
+
+3. The test frameworks are opaque to learners.
+
+** Conclusion
+
+While flawed, and the site appears to have financial issues, there is value here. As all the exercises are currently on Github, they can be accessed without using the download/submit tools and worked independently from exercism.io.
+
+My solutions to various problems aren't particularly good or bad. Sometimes I go for a "best idiomatic" approach, and sometimes I experiment with deliberately questionable code to see what I learn from the experience.
+
+My code is public domain if anyone wants it. The parts from exercism maintain their license rights and restrictions.
+
+Troy Brumley, February 2022.

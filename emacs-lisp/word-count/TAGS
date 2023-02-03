@@ -1,0 +1,51 @@
+
+.exercism/config.json,614
+  "blurb": "Given a phrase, count the occurrences of each word in that phrase.",blurb2,2
+  "authors": [],authors3,83
+    "canweriotnow",05,120
+    "npostavs",16,140
+    "vermiculus",27,156
+    "wasamasa",38,174
+    "yurrriq"49,190
+  "contributors": [contributors4,100
+      "word-count.el"013,240
+    "solution": [solution12,222
+      "word-count-test.el"016,283
+    "test": [test15,269
+      ".meta/example.el"019,334
+    "example": [example18,317
+  "files": {files11,209
+  "source": "This is a classic toy problem, but we were reminded of it by seeing it in the Go Tosource22,370
+
+.exercism/metadata.json,762
+{"track":"emacs-lisp","exercise":"word-count","id":"16b6ed77221a467d90943c4efb98606b","url":"htttrack1,0
+{"track":"emacs-lisp","exercise":"word-count","id":"16b6ed77221a467d90943c4efb98606b","url":"httexercise1,0
+{"track":"emacs-lisp","exercise":"word-count","id":"16b6ed77221a467d90943c4efb98606b","url":"httid1,0
+{"track":"emacs-lisp","exercise":"word-count","id":"16b6ed77221a467d90943c4efb98606b","url":"htturl1,0
+{"track":"emacs-lisp","exercise":"word-count","id":"16b6ed77221a467d90943c4efb98606b","url":"htthandle1,0
+{"track":"emacs-lisp","exercise":"word-count","id":"16b6ed77221a467d90943c4efb98606b","url":"httis_requester1,0
+{"track":"emacs-lisp","exercise":"word-count","id":"16b6ed77221a467d90943c4efb98606b","url":"httauto_approve1,0
+
+word-count.el,40
+(defun word-count (s)word-count11,262
+
+README.md,166
+# Word CountWord Count1,0
+## InstructionsInstructions6,150
+## SourceSource38,1198
+### Contributed to byContributed to by40,1209
+### Based onBased on48,1298
+
+word-count-test.el,44
+(defun equal-assoc (a b)equal-assoc10,118
+
+HELP.md,324
+# HelpHelp1,0
+## Running the testsRunning the tests3,8
+## Interactively from within EmacsInteractively from within Emacs7,62
+## From the terminalFrom the terminal31,839
+## Other optionsOther options48,1407
+## Submitting your solutionSubmitting your solution52,1485
+## Need to get help?Need to get help?62,1837
+
+TAGS,0

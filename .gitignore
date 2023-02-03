@@ -1,0 +1,8 @@
+**/.exercism
+a.out
+*.o
+tests.out
+**/__pycache__
+**/.pytest_cache
+.projectile
+create.zsh

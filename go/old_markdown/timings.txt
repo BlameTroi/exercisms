@@ -1,0 +1,9 @@
+pkg: markdown
+cpu: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+BenchmarkMarkdown-8   	  136683	      9003 ns/op	    4361 B/op	     126 allocs/op
+PASS
+
+pkg: markdown
+cpu: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+BenchmarkMarkdown-8   	   59690	     18804 ns/op	    9419 B/op	     577 allocs/op
+PASS

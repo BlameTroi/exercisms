@@ -1,0 +1,14 @@
+no initial capacity:
+BenchmarkBracket-8   	 1413000	       857.5 ns/op	     184 B/op	      19 allocs/op
+
+initial capacity 10:
+BenchmarkBracket-8   	 1495766	       822.6 ns/op	     816 B/op	      17 allocs/op
+
+initial capacity 5:
+BenchmarkBracket-8   	 1666957	       723.8 ns/op	     408 B/op	      17 allocs/op
+
+initial capacity 4:
+BenchmarkBracket-8   	 1668805	       713.5 ns/op	     272 B/op	      17 allocs/op
+
+initial capacity 2:
+BenchmarkBracket-8   	 1633173	       726.2 ns/op	     200 B/op	      21 allocs/op

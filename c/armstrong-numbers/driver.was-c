@@ -1,0 +1,54 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <math.h>
+#include <string.h>
+
+#include "armstrong_numbers.h"
+
+int main(int argc, char *argv[]) {
+
+    // display args to make sure i'm understanding this properly
+    printf("   argc = %d\n", argc);
+    printf("argv[0] = %s\n", argv[0]);
+    if (argc > 1)
+        printf("argv[1] = %s\n", argv[1]);
+
+    if (argc != 2) {
+        printf("expected one argument, an integer.\n");
+        return 1;
+    }
+
+    // convert the arg to an integer
+    int candidate;
+    char *endarg = NULL;
+    errno = 0;
+    candidate = (int)strtol(argv[1], &endarg, 10);
+
+    // bail on error
+    if (errno != 0) {
+        printf("unexpected error %d\n", errno);
+        return -1;
+    }
+    if (endarg == argv[1]) {
+        printf("no digits found.\n");
+        return -1;
+    }
+
+    // now back to a string for armstrong check ...
+    // length includes trailing null byte
+#define SB_LENGTH 32
+    char sb[SB_LENGTH];
+    snprintf(sb, SB_LENGTH, "%d", candidate);
+    printf("after convert: %s\n", sb);
+
+    int sum = 0;
+    int pwr = strlen(sb);
+    for(char* p = sb; *p != '\0'; p++) {
+        int d = *p - '0';
+        sum += (int)(pow((double)d, (double)pwr));
+    }
+    printf("candidate: %d\n      sum: %d\n", candidate, sum);
+
+    return 0;
+}

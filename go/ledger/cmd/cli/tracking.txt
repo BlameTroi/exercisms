@@ -1,0 +1,93 @@
+test coverage, result, and benchmark after each commit
+
+
+commit bd931a1f052860b1349231bd22ce6e317f56d345
+
+minor changes: extract headers, leave some notes, added cli for one off testing that i can easily read
+
+ok  	ledger	0.075s	coverage: 94.2% of statements
+goos: windows
+goarch: amd64
+pkg: ledger
+cpu: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+BenchmarkFormatLedger-8   	   31366	     36402 ns/op	    8145 B/op	     244 allocs/op
+PASS
+coverage: 88.4% of statements
+ok  	ledger	1.604s
+
+
+commit a9947340a82d69849e9bb394ffb9e96711cf7b32
+
+starting replacing string concatenation with Sprintf, name the struct returned from go routine for detail
+line formatting to clean up some of the clutter in that code.
+
+ok  	ledger	0.081s	coverage: 94.2% of statements
+goos: windows
+goarch: amd64
+pkg: ledger
+cpu: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+BenchmarkFormatLedger-8   	   32055	     36977 ns/op	    7885 B/op	     222 allocs/op
+PASS
+coverage: 88.4% of statements
+ok  	ledger	1.653s
+
+
+commit 78b8de78ff5f2bbc658624f222d830662ff2715e
+
+rename variables, identify targets for sprintf and scanf, add guard clauses to entry
+
+ok  	ledger	0.077s	coverage: 93.3% of statements
+goos: windows
+goarch: amd64
+pkg: ledger
+cpu: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+BenchmarkFormatLedger-8   	   27109	     45439 ns/op	   12825 B/op	     299 allocs/op
+PASS
+coverage: 89.2% of statements
+ok  	ledger	1.752s
+
+
+commit 190f35230835d935d9f52bcf28607df79da0f093
+
+replace bubble sort with sort.Slice(), consolidate error checking into guard clauses,
+removed error field from detail line chan struct, and more renames.
+
+ok  	ledger	0.084s	coverage: 93.8% of statements
+goos: windows
+goarch: amd64
+pkg: ledger
+cpu: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+BenchmarkFormatLedger-8   	   29613	     39990 ns/op	   10751 B/op	     290 allocs/op
+PASS
+coverage: 91.1% of statements
+ok  	ledger	1.673s
+
+
+commit f25171f7d445d7580c054475e18950ffba98d253
+
+remove go routine use for detail lines, overkill and actually slower, this ended up being
+memory neutral but decreased cpu usage greatly, extracted some functions for cleaner and
+clearer mainline code
+
+ok  	ledger	0.067s	coverage: 92.6% of statements
+goos: windows
+goarch: amd64
+pkg: ledger
+cpu: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+BenchmarkFormatLedger-8   	   74222	     16340 ns/op	    6906 B/op	     250 allocs/op
+PASS
+coverage: 88.9% of statements
+ok  	ledger	1.451s
+
+
+commit ***final***
+
+ok  	ledger	0.077s	coverage: 91.6% of statements
+goos: windows
+goarch: amd64
+pkg: ledger
+cpu: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+BenchmarkFormatLedger-8   	   33235	     33363 ns/op	    9390 B/op	     384 allocs/op
+PASS
+coverage: 87.4% of statements
+ok  	ledger	1.570s
