@@ -6,3 +6,5 @@ tests.out
 **/.pytest_cache
 .projectile
 create.zsh
+TAGS
+.#*

@@ -43,6 +43,10 @@ And your code will transform it into this:
 
 ## Source
 
+### Created by
+
+- @norbs57
+
 ### Contributed to by
 
 - @alebaffa
