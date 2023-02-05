@@ -1,7 +1,6 @@
 # RNA Transcription
 
-Welcome to RNA Transcription on Exercism's Emacs Lisp Track.
-If you need help running the tests or submitting your code, check out `HELP.md`.
+Welcome to RNA Transcription on Exercism's Emacs Lisp Track. If you need help running the tests or submitting your code, check out `HELP.md`.
 
 ## Instructions
 
