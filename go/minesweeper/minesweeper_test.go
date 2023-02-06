@@ -1,6 +1,7 @@
 package minesweeper
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -176,6 +177,13 @@ func TestAnnotate(t *testing.T) {
 			got := Annotate(tc.minefield)
 			want := tc.expected
 			if !slicesEqual(want, got) {
+
+				fmt.Printf("--- failing %s ---\n", tc.description)
+				for i := 0; i < len(tc.minefield); i = i + 1 {
+					fmt.Printf("|%s|  |%s|  |%s|\n", tc.minefield[i], want[i], got[i])
+				}
+				fmt.Printf("------\n\n")
+
 				t.Fatalf("expected: %v, got: %v", want, got)
 			}
 		})
