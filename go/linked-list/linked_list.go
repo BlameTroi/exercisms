@@ -4,6 +4,12 @@ package linkedlist
 
 import "errors"
 
+// Update February 2023. The exercise was updated on Exercism
+// with the API documentation being put in the README file.
+// The APi was also changed with one rename and two new
+// methods. Leaving the original here, see README.md for the
+// final API.
+//
 // API as documented in the tests, with the functions listed in
 // the instructions on the exercism site.
 //
@@ -14,18 +20,24 @@ import "errors"
 // func (e *Node) Next() *Node
 // func (e *Node) Prev() *Node
 //
+// func (e *Node) Value interface{} ... was Val
+//
 // func NewList(args ...interface{}) *List
 //
 // func (l *List) PushFront(v interface{})
+// renamed Unshift
 // from instructions unshift insert value at front
 //
 // func (l *List) PushBack(v interface{})
+// renamed Push
 // from instructions push insert value at back
 //
 // func (l *List) PopFront() (interface{}, error)
+// renamed Shift
 // from instructions shift remove value at front
 //
 // func (l *List) PopBack() (interface{}, error)
+// renamed Pop
 // from instructions pop remove value at back
 //
 // func (l *List) Reverse() *List
@@ -40,7 +52,7 @@ import "errors"
 // Node is a note in the List. It has one exported
 // variable.
 type Node struct {
-	Val        interface{}
+	Value      interface{}
 	prev, next *Node
 }
 
@@ -73,7 +85,7 @@ func NewList(args ...interface{}) *List {
 	res := &List{}
 	var prev *Node
 	for _, v := range args {
-		n := &Node{Val: v, next: nil, prev: prev}
+		n := &Node{Value: v, next: nil, prev: prev}
 		if prev == nil {
 			res.front = n
 			res.back = n
@@ -88,36 +100,36 @@ func NewList(args ...interface{}) *List {
 }
 
 // PushFront adds a new value to the head of the List.
-func (l *List) PushFront(v interface{}) {
+func (l *List) Unshift(v interface{}) {
 	if l.front == nil {
-		l.front = &Node{Val: v}
+		l.front = &Node{Value: v}
 		l.back = l.front
 		return
 
 	}
 	next := l.front
-	l.front = &Node{Val: v, next: next}
+	l.front = &Node{Value: v, next: next}
 	next.prev = l.front
 }
 
-// PUshFront adds a value to the end of the List.
-func (l *List) PushBack(v interface{}) {
+// PushBack adds a value to the end of the List.
+func (l *List) Push(v interface{}) {
 	if l.back == nil {
-		l.back = &Node{Val: v}
+		l.back = &Node{Value: v}
 		l.front = l.back
 		return
 	}
 	prev := l.back
-	l.back = &Node{Val: v, prev: prev}
+	l.back = &Node{Value: v, prev: prev}
 	prev.next = l.back
 }
 
 // PopFront removes the value from the front of the List.
-func (l *List) PopFront() (interface{}, error) {
+func (l *List) Shift() (interface{}, error) {
 	if l.front == nil {
 		return new(interface{}), ErrEmptyList
 	}
-	res := l.front.Val
+	res := l.front.Value
 	next := l.front.next
 	if next == nil {
 		l.back = nil
@@ -129,11 +141,11 @@ func (l *List) PopFront() (interface{}, error) {
 }
 
 // PopBack removes the value from the end of the List.
-func (l *List) PopBack() (interface{}, error) {
+func (l *List) Pop() (interface{}, error) {
 	if l.back == nil {
 		return new(interface{}), ErrEmptyList
 	}
-	res := l.back.Val
+	res := l.back.Value
 	prev := l.back.prev
 	if prev == nil {
 		l.front = nil
@@ -154,7 +166,7 @@ func (l *List) CopyReverse() *List {
 		if curr == nil {
 			break
 		}
-		args = append(args, curr.Val)
+		args = append(args, curr.Value)
 		curr = curr.prev
 	}
 	return NewList(args...)
@@ -175,11 +187,11 @@ func (l *List) Reverse() {
 func (l *List) NaiveReverse() {
 	args := []interface{}{}
 	for l.Last() != nil {
-		v, _ := l.PopBack()
+		v, _ := l.Pop()
 		args = append(args, v)
 	}
 	for _, v := range args {
-		l.PushBack(v)
+		l.Push(v)
 	}
 }
 

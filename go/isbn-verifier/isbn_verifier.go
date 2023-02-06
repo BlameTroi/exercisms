@@ -10,6 +10,9 @@ func IsValidISBN(s string) bool {
 	digits := make([]rune, 0, 11)
 
 	for _, r := range s {
+		if r == '-' {
+			continue
+		}
 		if r >= '0' && r <= '9' {
 			digits = append(digits, r-'0')
 			continue
@@ -18,6 +21,8 @@ func IsValidISBN(s string) bool {
 			digits = append(digits, rune(10))
 			continue
 		}
+		// none digit, non '-', is an error
+		return false
 	}
 
 	if len(digits) != 10 {

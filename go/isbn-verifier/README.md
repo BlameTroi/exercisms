@@ -1,6 +1,6 @@
-# Isbn Verifier
+# ISBN Verifier
 
-Welcome to Isbn Verifier on Exercism's Go Track.
+Welcome to ISBN Verifier on Exercism's Go Track.
 If you need help running the tests or submitting your code, check out `HELP.md`.
 
 ## Instructions
@@ -12,8 +12,8 @@ numbers. These normally contain dashes and look like: `3-598-21508-8`
 
 The ISBN-10 format is 9 digits (0 to 9) plus one check character (either a digit or an X only). In the case the check character is an X, this represents the value '10'. These may be communicated with or without hyphens, and can be checked for their validity by the following formula:
 
-```shell
-(x1 * 10 + x2 * 9 + x3 * 8 + x4 * 7 + x5 * 6 + x6 * 5 + x7 * 4 + x8 * 3 + x9 * 2 + x10 * 1) mod 11 == 0
+```text
+(d₁ * 10 + d₂ * 9 + d₃ * 8 + d₄ * 7 + d₅ * 6 + d₆ * 5 + d₇ * 4 + d₈ * 3 + d₉ * 2 + d₁₀ * 1) mod 11 == 0
 ```
 
 If the result is 0, then it is a valid ISBN-10, otherwise it is invalid.
@@ -22,7 +22,7 @@ If the result is 0, then it is a valid ISBN-10, otherwise it is invalid.
 
 Let's take the ISBN-10 `3-598-21508-8`. We plug it in to the formula, and get:
 
-```shell
+```text
 (3 * 10 + 5 * 9 + 9 * 8 + 8 * 7 + 2 * 6 + 1 * 5 + 5 * 4 + 0 * 3 + 8 * 2 + 8 * 1) mod 11 == 0
 ```
 
@@ -50,20 +50,21 @@ Now, it's even trickier since the check digit of an ISBN-10 may be 'X' (represen
 
 ### Created by
 
-* @creaaa
+- @creaaa
 
 ### Contributed to by
 
-* @bitfield
-* @ekingery
-* @ferhatelmas
-* @h311ion
-* @hilary
-* @kytrinyx
-* @leenipper
-* @sebito91
-* @tinsch
+- @bitfield
+- @ekingery
+- @ferhatelmas
+- @h311ion
+- @hilary
+- @kytrinyx
+- @leenipper
+- @sebito91
+- @tinsch
+- @eklatzer
 
 ### Based on
 
-Converting a string into a number and some basic processing utilizing a relatable real world example. - <https://en.wikipedia.org/wiki/International_Standard_Book_Number#ISBN-10_check_digit_calculation>
+Converting a string into a number and some basic processing utilizing a relatable real world example. - https://en.wikipedia.org/wiki/International_Standard_Book_Number#ISBN-10_check_digit_calculation

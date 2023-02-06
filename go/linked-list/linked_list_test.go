@@ -1,25 +1,8 @@
-// API:
-//
-// type Node struct
-// type List struct
-// var ErrEmptyList
-//
-// func (e *Node) Next() *Node
-// func (e *Node) Prev() *Node
-// func NewList(args ...interface{}) *List
-// func (l *List) PushFront(v interface{})
-// func (l *List) PushBack(v interface{})
-// func (l *List) PopFront() (interface{}, error)
-// func (l *List) PopBack() (interface{}, error)
-// func (l *List) Reverse() *List
-// func (l *List) First() *Node
-// func (l *List) Last() *Node
 package linkedlist
 
 import (
 	"bytes"
 	"fmt"
-	"reflect"
 	"testing"
 )
 
@@ -62,8 +45,8 @@ func checkDoublyLinkedList(t *testing.T, ll *List, expected []interface{}) {
 	// check that length and elements are correct (scan once from begin -> end)
 	elem, count, idx := ll.First(), 0, 0
 	for ; elem != nil && idx < len(expected); elem, count, idx = elem.Next(), count+1, idx+1 {
-		if elem.Val != expected[idx] {
-			t.Errorf("wrong value from %d-th element, expected= %v, got= %v", idx, expected[idx], elem.Val)
+		if elem.Value != expected[idx] {
+			t.Errorf("wrong value from %d-th element, expected= %v, got= %v", idx, expected[idx], elem.Value)
 		}
 	}
 	if !(elem == nil && idx == len(expected)) {
@@ -115,7 +98,7 @@ func checkDoublyLinkedList(t *testing.T, ll *List, expected []interface{}) {
 	}
 }
 
-// debugString prints the linked list with both node's Val, next & prev pointers.
+// debugString prints the linked list with both node's Value, next & prev pointers.
 func (ll *List) debugString() string {
 	buf := bytes.NewBuffer([]byte{'{'})
 	buf.WriteString(fmt.Sprintf("First()= %p; ", ll.First()))
@@ -127,29 +110,11 @@ func (ll *List) debugString() string {
 		if counter > 100 {
 			panic("Possible infinite loop detected and stopped. Check the .Next() implementation")
 		}
-		buf.WriteString(fmt.Sprintf("[Prev()= %p, Val= %p (%v), Next()= %p] <-> ", cur.Prev(), cur, cur.Val, cur.Next()))
+		buf.WriteString(fmt.Sprintf("[Prev()= %p, Value= %p (%v), Next()= %p] <-> ", cur.Prev(), cur, cur.Value, cur.Next()))
 	}
 
 	buf.WriteString(fmt.Sprintf("; Last()= %p; ", ll.Last()))
 	buf.WriteByte('}')
 
 	return buf.String()
-}
-
-func TestList_First(t *testing.T) {
-	tests := []struct {
-		name string
-		l    *List
-		want string
-	}{
-		{"one", NewList([]interface{}{"first", "last"}...), "first"},
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.l.First(); !reflect.DeepEqual(got.Val, tt.want) {
-				t.Errorf("List.First() = %v, want %v", got, tt.want)
-			}
-		})
-	}
 }
