@@ -33,8 +33,5 @@ important thing is to make the code better!
 - @hilary
 - @leenipper
 - @sebito91
-
-And this is a __test
-of the emergency broadcast system__
-
-This __is__ only a test.
+- @eklatzer
+- @jasstkn
