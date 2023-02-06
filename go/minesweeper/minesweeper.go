@@ -1,86 +1,77 @@
 package minesweeper
 
-import "errors"
+func Annotate(s []string) []string {
 
-func (b Board) Count() error {
-
-	// dimensions must be of a regular rectangle at least two
-	// across and two down.
-	rows := len(b)
-	if rows < 2 {
-		return errors.New("bad height")
+	// guard clauses: garbage in = same garbage out
+	if len(s) == 0 || len(s[0]) == 0 {
+		return s
 	}
 
-	cols := len(b[0])
-	if cols < 2 {
-		return errors.New("bad witdh")
+	rows := len(s)
+	cols := len(s[0])
+
+	if rows < 2 || cols < 2 {
+		return s
 	}
 
-	for _, row := range b {
+	for _, row := range s {
 		if len(row) != cols {
-			return errors.New("jagged")
+			return s
 		}
 	}
 
-	// borders must have corners of '+', vertical of '|',
-	// and horizontal of '-'
-	if b[0][0] != '+' || b[0][cols-1] != '+' ||
-		b[rows-1][0] != '+' || b[rows-1][cols-1] != '+' {
-		return errors.New("invalid border: corner")
+	// this works better as runes ...
+	b := make([][]rune, rows)
+	for i, row := range s {
+		b[i] = []rune(row)
 	}
 
-	for c := 1; c < cols-1; c++ {
-		if b[0][c] != '-' || b[rows-1][c] != '-' {
-			return errors.New("invalid border: horizontal")
-		}
-	}
-
-	for r := 1; r < rows-1; r++ {
-		if b[r][0] != '|' || b[r][cols-1] != '|' {
-			return errors.New("invalid border: vertical")
-		}
-	}
-
-	// interior must be blanks or mines '*'
-	for r := 1; r < rows-1; r++ {
-		for c := 1; c < cols-1; c++ {
-			if b[r][c] != ' ' && b[r][c] != '*' {
-				return errors.New("invalid character")
-			}
-		}
-	}
-
-	// scan and fill
-	for r := 1; r < rows-1; r++ {
-		for c := 1; c < cols-1; c++ {
-			n := countAround(b, r, c)
-			if n == 0 {
+	// update board in place
+	for r := 0; r < rows; r = r + 1 {
+		for c := 0; c < cols; c = c + 1 {
+			if b[r][c] == '*' {
+				// mined grids don't need counts
 				continue
 			}
-			b[r][c] = byte('0' + n)
+
+			// scan surrounding grids
+			n := 0
+			for y := r - 1; y < r+2; y++ {
+				if y < 0 || y >= rows {
+					continue
+				}
+				for x := c - 1; x < c+2; x++ {
+					if x < 0 || x >= cols {
+						continue
+					}
+					if b[y][x] == '*' {
+						n = n + 1
+					}
+				}
+			}
+			if n > 0 {
+				b[r][c] = rune(n + '0')
+			}
 		}
 	}
 
-	return nil
+	// reformat back to []string format
+	r := make([]string, rows)
+	for i, runeRow := range b {
+		r[i] = string(runeRow)
+	}
+
+	return r
 }
 
 // count mines around a grid. edges are never checked
 // so there's no need to watch for boundary conditions.
-func countAround(b Board, r int, c int) int {
+func countAround(b [][]rune, r int, c int) int {
 	n := 0
 
 	// no count needed if this is a mine
 	if b[r][c] == '*' {
 		return 0
-	}
-
-	// scan surrounding grids
-	for y := r - 1; y < r+2; y++ {
-		for x := c - 1; x < c+2; x++ {
-			if b[y][x] == '*' {
-				n = n + 1
-			}
-		}
 	}
 
 	return n

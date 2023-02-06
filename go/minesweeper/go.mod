@@ -1,3 +1,3 @@
-module blametroi.com/minesweeper
+module blametroi/minesweeper
 
 go 1.20
