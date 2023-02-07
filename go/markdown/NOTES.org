@@ -1,0 +1,3 @@
+* this is broken
+
+Handling of list and header needs to recognize them only if they are the first character of a line.

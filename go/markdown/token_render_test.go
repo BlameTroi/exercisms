@@ -76,6 +76,13 @@ func Test_Token_Header(t *testing.T) {
 
 }
 
+func Test_Token_Bad_Header(t *testing.T) {
+
+	input := "####### This should not be an H7"
+	want := "<p>####### This should not be an H7</p>"
+	assertRender(t, TokenRender, input, want)
+}
+
 func Test_Token_List(t *testing.T) {
 
 	input := "* Item 1\n* Item 2"

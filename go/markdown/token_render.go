@@ -28,9 +28,12 @@ import (
 // '__' brackets text to be rendered in bold as <strong>
 // '_'  brackets text to be rendered in italics as <em>
 // '#+' marks a header. The number of repeating # determines
-//      the heading style <h1-?>
+//
+//	the heading style <h1-?>
+//
 // '*'  marks an item in an unordered list. The first *
-//      starts a new unordered list <ul> and <li>
+//
+//	starts a new unordered list <ul> and <li>
 //
 // The reference implementation wraps the rendered HTML
 // in <p></p> unless a list or header is encountered. We
@@ -77,6 +80,18 @@ func TokenRender(md string) string {
 			continue
 		}
 
+		// TODO: if rune is a header or list marker (# or _) and we are currently
+		// in a header, treat it as a normal rune. For an initial test, if header
+		// was seen, assume we are still in it ...
+		if c == '#' || c == '*' {
+			// is there a <h on the stack? just check top for now, but we
+			// will need to check more deeply
+			if strings.HasPrefix(closers.peek(), "</h") {
+				w.WriteRune(c)
+				continue
+			}
+		}
+
 		if w.Len() != 0 {
 			tokens = append(tokens, w.String())
 			w = &strings.Builder{}
@@ -99,9 +114,14 @@ func TokenRender(md string) string {
 		rl, _ := runLength(r)
 
 		if c == '#' {
-			sawHeader = true
-			tokens = append(tokens, fmt.Sprintf("<h%d>", rl))
-			closers.push(fmt.Sprintf("</h%d>", rl))
+			if rl > 6 {
+				// Markdown only allows up to six levels of heading.
+				tokens = append(tokens, strings.Repeat("#", rl)+" ")
+			} else {
+				sawHeader = true
+				tokens = append(tokens, fmt.Sprintf("<h%d>", rl))
+				closers.push(fmt.Sprintf("</h%d>", rl))
+			}
 			skipBlanks(r)
 			continue
 		}
