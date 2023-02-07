@@ -28,10 +28,10 @@ func romanDigitsByPowersOfTen() [][]string {
 }
 
 // Function ToRomanNumeral returns a string of representation of an int
-// in the range 1 <= int <= 3000 using Roman numerals.
+// in the range 1 <= int <= 3999 using Roman numerals.
 func ToRomanNumeral(a int) (string, error) {
-	if a < 1 || a > 3000 {
-		return "", errors.New("can not convert numbers to roman numerals outside the range of 1 to 3000 inclusive")
+	if a < 1 || a > 3999 {
+		return "", errors.New("can not convert numbers to roman numerals outside the range of 1 to 3999 inclusive")
 	}
 	// Get a local copy of the dec->rom digit table.
 	decToRom := romanDigitsByPowersOfTen()

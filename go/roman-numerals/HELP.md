@@ -2,17 +2,19 @@
 
 ## Running the tests
 
-Simply type `make chez` if you're using ChezScheme or `make guile` if you're using GNU Guile.
+To run the tests run the command `go test` from within the exercise directory.
 
-## Using the REPL
+If the test suite contains benchmarks, you can run these with the `--bench` and `--benchmem`
+flags:
 
-- Enter `test.scm` at the repl prompt.
-- Develop your solution in the file `problem.scm` reloading as you go.
-- Run `(test)` to check your solution.
+    go test -v --bench . --benchmem
+
+Keep in mind that each reviewer will run benchmarks on a different machine, with
+different specs, so the results from these benchmark tests may vary.
 
 ## Submitting your solution
 
-You can submit your solution using the `exercism submit transpose.scm` command.
+You can submit your solution using the `exercism submit roman_numerals.go` command.
 This command will upload your solution to the Exercism website and print the solution page's URL.
 
 It's possible to submit an incomplete solution which allows you to:
@@ -24,7 +26,7 @@ It's possible to submit an incomplete solution which allows you to:
 
 If you'd like help solving the exercise, check the following pages:
 
-- The [Scheme track's documentation](https://exercism.org/docs/tracks/scheme)
+- The [Go track's documentation](https://exercism.org/docs/tracks/go)
 - [Exercism's programming category on the forum](https://forum.exercism.org/c/programming/5)
 - The [Frequently Asked Questions](https://exercism.org/docs/using/faqs)
 
@@ -32,5 +34,7 @@ Should those resources not suffice, you could submit your (incomplete) solution 
 
 To get help if you're having trouble, you can use one of the following resources:
 
-- [/r/scheme](https://www.reddit.com/r/scheme) is the Scheme subreddit.
-- [StackOverflow](http://stackoverflow.com/questions/tagged/scheme) can be used to search for your problem and see if it has been answered already. You can also ask and answer questions.
+- [How to Write Go Code](https://golang.org/doc/code.html)
+- [Effective Go](https://golang.org/doc/effective_go.html)
+- [Go Resources](http://golang.org/help)
+- [StackOverflow](http://stackoverflow.com/questions/tagged/go)
