@@ -38,12 +38,14 @@ var gustavHolst = []orbitalPeriods{
 // the spec does not provide direction on what
 // to do if an invalid planet name is passed
 // but to avoid the hole in the bucket syndrome
-// i'm returning 0.0.
+// i was returning 0.0. the tests were just
+// updated and a -1.0 is now expected on
+// error.
 func Age(s float64, p Planet) float64 {
 	for _, gh := range gustavHolst {
 		if gh.planet == p {
 			return s / gh.seconds
 		}
 	}
-	return 0.0
+	return -1.0
 }
