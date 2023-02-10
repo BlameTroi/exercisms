@@ -2,21 +2,21 @@
 // and walking a bst.
 package binarysearchtree
 
-// SearchTreeData is a node in the bst.
-type SearchTreeData struct {
+// BinarySearchTree is a node in the bst.
+type BinarySearchTree struct {
 	data        int
-	left, right *SearchTreeData
+	left, right *BinarySearchTree
 }
 
 // Bst creates a single unlinked node in the bst.
-func Bst(i int) *SearchTreeData {
-	return &SearchTreeData{data: i}
+func NewBst(i int) *BinarySearchTree {
+	return &BinarySearchTree{data: i}
 }
 
 // Insert adds an item to the bst. If a node with
 // the same data value already exists, the tree is
 // not modified but this is not an error.
-func (bst *SearchTreeData) Insert(i int) {
+func (bst *BinarySearchTree) Insert(i int) {
 	curr := bst
 	for {
 		if i <= curr.data {
@@ -24,14 +24,14 @@ func (bst *SearchTreeData) Insert(i int) {
 				curr = curr.left
 				continue
 			}
-			curr.left = Bst(i)
+			curr.left = NewBst(i)
 			return
 		} else {
 			if curr.right != nil {
 				curr = curr.right
 				continue
 			}
-			curr.right = Bst(i)
+			curr.right = NewBst(i)
 			return
 		}
 	}
@@ -40,7 +40,7 @@ func (bst *SearchTreeData) Insert(i int) {
 // MapString walks the bst and applies a function to
 // the data in the tree and returns a slice of the
 // results of f in the correct order.
-func (bst *SearchTreeData) MapString(f func(int) string) []string {
+func (bst *BinarySearchTree) MapString(f func(int) string) []string {
 	res := []string{}
 	if bst.left != nil {
 		res = bst.left.MapString(f)
@@ -55,7 +55,7 @@ func (bst *SearchTreeData) MapString(f func(int) string) []string {
 // MapInt walks the bst and applies a function to
 // the data in the tree and returns a slice of the
 // results of f in the correct order.
-func (bst *SearchTreeData) MapInt(f func(int) int) []int {
+func (bst *BinarySearchTree) MapInt(f func(int) int) []int {
 	res := []int{}
 	if bst.left != nil {
 		res = bst.left.MapInt(f)
@@ -65,4 +65,9 @@ func (bst *SearchTreeData) MapInt(f func(int) int) []int {
 		res = append(res, bst.right.MapInt(f)...)
 	}
 	return res
+}
+
+func (bst *BinarySearchTree) SortedData() []int {
+	f := func(i int) int { return i }
+	return bst.MapInt(f)
 }

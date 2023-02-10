@@ -80,6 +80,7 @@ And if we then added 1, 5, and 7, it would look like this
 - @sjakobi
 - @tapank
 - @tleen
+- @norbs57
 
 ### Based on
 
