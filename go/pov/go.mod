@@ -1,3 +1,3 @@
-module pov
+module blametroi/pov
 
-go 1.13
+go 1.20
