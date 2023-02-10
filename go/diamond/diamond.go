@@ -8,7 +8,7 @@ import (
 )
 
 // Gen returns a multiline string holding with
-// a representation of a diamon drawn using
+// a representation of a diamond drawn using
 // uppercase letters.
 func Gen(b byte) (string, error) {
 	if b < 'A' || b > 'Z' {
@@ -45,5 +45,6 @@ func Gen(b byte) (string, error) {
 		sb.WriteString(string(lines[i]))
 		sb.WriteByte('\n')
 	}
-	return sb.String(), nil
+	s := sb.String()
+	return s[:len(s)-1], nil
 }
