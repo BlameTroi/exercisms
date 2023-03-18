@@ -45,12 +45,7 @@ Returns stack contents to caller."
 
    ;; standard invocation per problem spec, a list of strings
    (else
-    ;; set up default environment
-    (clear-stack)
-    (base-dec)
-    (clear-user-words)
-    (set! byebye #f)
-    (set! compiling #f)
+    (initialize-forth-environment)
     (map fparse program)
     param-stack)))
 
@@ -103,13 +98,27 @@ parsing is very simple."
      ((and (= radix 2)  (string-every chars-bin word)) (push (string->number word radix)))
 
      ;; I'm sorry Dave, I can't do that
-     (else (error 'feval "unknown or undefined forth word" word radix param-stack)))))
+     (else (error 'feval "unknown or undefined word" word radix param-stack)))))
 
+;; Set/reset global state.
+(define (initialize-forth-environment)
+  "Reset environment to known state."
+  (clear-stack)
+  (clear-user-words)
+  (set! compiling #f)
+  (set! byebye #f)
+  (base-dec))
 
-;;; param-stack.scm ;;;
-;; global forth parameter stack and api
+;; Controls eval loop handling.
+(define compiling #f)
 
+;; "bye" encountered on input. eval flushes input if seen.
+(define byebye #f)
 
+(define (clear-user-words) (set! user-words '()))
+
+;; param-stack is the operand stack for forth, stored as a
+;; list. top of stack is (car).
 (define param-stack '())
 
 (define (clear-stack)
@@ -124,21 +133,32 @@ parsing is very simple."
   (let ((n (car param-stack)))
     (set! param-stack (cdr param-stack)) n))
 
-(define (deep-enough? n)
-  (<= n (length param-stack)))
-
 (define (check-stack n sym)
-  (cond ((deep-enough? n) #t)
-        (else (error check-stack
-                     "stack underflow on op"
-                     sym n (length param-stack) param-stack))))
+  "Throw an error if there's a stack underflow. An optimization
+would be to keep a running record of the stack depth instead of
+checking length on each call, but that's not really needed."
+  (if (> n (length param-stack))
+      (error
+       check-stack
+       "stack underflow on op"
+       sym n (length param-stack) param-stack)))
 
-;; core word implementation
+(define (dot-s)
+  "The .s operator."
+  (string-join (map number->string param-stack) " "))
 
-;; radix
+;; core vocabulary words implementation. these need to be seen by
+;; Scheme before the dictionaries so the function names bind
+;; properly.
+
+;; radix -- real forth supports arbitrary bases. 2 through 36 are
+;; easily doable with digits and the american english alphabet, but
+;; i'm only supporting the big four (hex, dec, oct, bin).
 
 (define radix 10)
+
 (define (base?) radix)
+
 (define (base)
   (check-stack 1 'base)
   (set! radix (pop)))
@@ -148,7 +168,8 @@ parsing is very simple."
 (define (base-oct) (push 8)  (base))
 (define (base-bin) (push 2)  (base))
 
-;; character sets for numeirc evaluation
+;; character sets for testing strings to see if the are valid
+;; digit sequences the current base.
 
 (define chars-hex (char-set #\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9
                             #\a #\b #\c #\d #\e #\f
@@ -161,7 +182,7 @@ parsing is very simple."
 (define chars-bin (char-set #\0 #\1))
 
 
-;; stack operations
+;; primitive stack operations. these can be redefined by the user.
 
 (define (dup)
   (check-stack 1 'dup)
@@ -179,10 +200,8 @@ parsing is very simple."
   (check-stack 2 'over)
   (push (cadr param-stack))) ;; NOTE: violates api via direct access
 
-(define (dot-s)
-  (string-join (map number->string param-stack) " "))
+;; primitive arithmetic. these can be redefined by the user.
 
-;; integer arithmetic
 (define (op-)
   (check-stack 2 '-)
   (let* ((n (pop)) (m (pop)) (r (- m n))) (push r)))
@@ -207,7 +226,29 @@ parsing is very simple."
   (check-stack 2 '/mod)
   (let* ((n (pop)) (m (pop)) (r (remainder m n)) (q (quotient m n))) (push q) (push r)))
 
-;; constants
+;; logical operators -- these can be redefined
+
+(define (forth-bool b)
+  "Convert a real boolean to 1 for true, 0 for false."
+  (if b 1 0))
+
+(define (op<)
+  (check-stack 2 '<)
+  (let* ((n (pop)) (m (pop)) (r (< m n))) (push (forth-bool r))))
+
+(define (op=)
+  (check-stack 2 '=)
+  (let* ((n (pop)) (m (pop)) (r (= m n))) (push (forth-bool r))))
+
+(define (op>)
+  (check-stack 2 '>)
+  (let* ((n (pop)) (m (pop)) (r (> m n))) (push (forth-bool r))))
+
+(define (op-not)
+  (check-stack 1 'not)
+  (let* ((n (pop))) (push (forth-bool (if (zero? n) #t #f)))))
+
+;; constants -- these can not be redefined
 (define (c0)
   (push 0))
 
@@ -217,17 +258,12 @@ parsing is very simple."
 (define (c-1)
   (push -1))
 
-
-;;; dictionary.scm ;;;
-(define compiling #f)
-(define byebye #f)
+;; find procedure to execute word
 
 (define (proc-for word words)
   (cond ((null? words) 'word-not-found)
         ((string-ci= word (car (car words))) (cdr (car words)))
         (else (proc-for word (cdr words)))))
-
-(define (clear-user-words) (set! user-words '()))
 
 ;; these are words that can not be redefined
 (define perm-words
@@ -257,6 +293,10 @@ parsing is very simple."
    ;; primitive arithmetic
    (cons "+" op+) (cons "-" op-) (cons "/" op/)
    (cons "*" op*) (cons "mod" mod) (cons "/mod" /mod)
+
+   ;; logical operations
+   (cons "<" op<) (cons "=" op=) (cons ">" op>) (cons "not" op-not)
+
    ))
 
 (define user-words '())
