@@ -26,6 +26,7 @@
 ;; must appear in source before their reference in the core words
 ;; dictionary.
 
+
 (define (forth program)
   "Simple Forthish evaluator. Words can be defined, integer arithmetic
 basic operations, and the four obvious stack manipulations are
@@ -64,49 +65,111 @@ Returns stack contents to caller."
      (else (f xs)))))
 
 
-
 (define (fparse line)
   "See the line, split the line, do each item on the line. Forth
 parsing is very simple."
 
-  (map feval (string-split line (char-set #\space #\tab #\nl)))
-  param-stack)
+  (map feval (string-split line (char-set #\space #\tab #\nl))))
 
 
 (define (feval word)
-  (let ((word-func (proc-for word core-words)))
+  (let ((word-func (proc-for word)))
     (cond
      ;; empty string happens when multiple delimiters hit on split
      ((string= "" word) )
 
-     ;; if compiling, we just skip for now
-     ((string= ":" word) (set! compiling #t))
-     ((string= ";" word) (set! compiling #f))
-     (compiling )
+     ;; ": blah ;" defines a new word, compiling is a generous
+     ;; description. accumulate everything between : and ; and
+     ;; build something we can expand and execute. most words
+     ;; can be redefined, but there are some critical exceptions
+     ;; in the perm-words list.
+     ((string= ":" word)
+      (set! compiling #t)
+      (set! pending-def '()))
+
+     ((string= ";" word)
+      (set! pending-def (reverse pending-def))
+      (if (word-is-numeric-literal (car pending-def) radix)
+          (error 'feval "can not redefine a numeric literal via :;"
+                 (car pending-def) radix (cdr pending-def)))
+      (enter-into-vocabulary pending-def)
+      (set! compiling #f))
+
+     (compiling
+      (set! pending-def (cons word pending-def)))
 
      ;; once the user says bye, skip until end
-     ((string-ci= "bye" word) (set! byebye #t))
+     ((string-ci= "bye" word)
+      (set! byebye #t))
      (byebye )
 
      ;; word found in dictionaries?
-     ((not (equal? 'word-not-found word-func)) (apply word-func '()))
+     ;; idea around definitions is that any user word execution can't
+     ;; use a definition of depth less than the depth of the current word
+     ;; when defined. older words use older definitions.
+     ((not (equal? 'word-not-found word-func))
+      ;;(display "executing ")(display word)(newline)
+      (forth-execute word word-func))
 
      ;; number in supported radix? allowing for others would be nice
-     ((and (= radix 16) (string-every chars-hex word)) (push (string->number word radix)))
-     ((and (= radix 10) (string-every chars-dec word)) (push (string->number word radix)))
-     ((and (= radix 8)  (string-every chars-oct word)) (push (string->number word radix)))
-     ((and (= radix 2)  (string-every chars-bin word)) (push (string->number word radix)))
+     ((not (equal? #f (word-is-numeric-literal word radix)))
+      ;;(display "number ")(display word)(newline)
+      (push (word-is-numeric-literal word radix)))
 
      ;; I'm sorry Dave, I can't do that
-     (else (error 'feval "unknown or undefined word" word radix param-stack)))))
+
+     (else
+      ;;(display "what the actual fuck ")(display word)(newline)
+      (error 'feval "unknown or undefined word" word radix param-stack)))))
+
+(define (enter-into-vocabulary pending-def)
+  ;;(display "enter-into-vocabulary ")(display pending-def)(newline)
+  (let ((new-word (car pending-def)) (def (cdr pending-def))
+        (tokenized '()) (curr "") (proc '()))
+    (while (not (null? def))
+      (set! curr (car def))
+      (set! proc (proc-for curr))
+      (if (equal? proc 'word-not-found)
+          (set! proc (word-is-numeric-literal curr radix)))
+      (if (or (procedure? proc) (number? proc) (list? proc))
+          (set! tokenized (cons proc tokenized))
+          (error 'enter-into-vocabulary "unknown word in definition :;" curr pending-def))
+      (set! def (cdr def)))
+    ;; (display "definition ")(display (reverse tokenized))(newline)(newline)
+    (set! vocabulary-words (cons (cons new-word (reverse tokenized)) vocabulary-words))))
+
+
+(define (forth-execute word word-func)
+  "Execute the current word. Primitives are direct procedure references
+while user defined words are lists holding words as procedure references
+or literal numbers."
+  (cond
+   ((null? word-func) )
+   ((procedure? word-func) (apply word-func '()))
+   ((number? word-func) (push word-func))
+   ((list? word-func) (forth-execute word (car word-func)) (forth-execute word (cdr word-func)))
+   (else (error 'forth-execute "error in word definition" word word-func))))
+
+
+(define (word-is-numeric-literal w b)
+  "If string W is a numeric literal in base B, return the numeric
+value or #f."
+  (cond
+     ((and (= b 16) (string-every chars-hex w)) (string->number w b))
+     ((and (= b 10) (string-every chars-dec w)) (string->number w b))
+     ((and (= b 8)  (string-every chars-oct w)) (string->number w b))
+     ((and (= b 2)  (string-every chars-bin w)) (string->number w b))
+     (else #f)))
+
 
 ;; Set/reset global state.
 (define (initialize-forth-environment)
   "Reset environment to known state."
   (clear-stack)
-  (clear-user-words)
+  (set! vocabulary-words (list-copy core-words))
   (set! compiling #f)
   (set! byebye #f)
+  (set! pending-def '())
   (base-dec))
 
 ;; Controls eval loop handling.
@@ -114,8 +177,6 @@ parsing is very simple."
 
 ;; "bye" encountered on input. eval flushes input if seen.
 (define byebye #f)
-
-(define (clear-user-words) (set! user-words '()))
 
 ;; param-stack is the operand stack for forth, stored as a
 ;; list. top of stack is (car).
@@ -260,10 +321,16 @@ checking length on each call, but that's not really needed."
 
 ;; find procedure to execute word
 
-(define (proc-for word words)
+
+(define (proc-for word)
+  (proc-for-r word vocabulary-words))
+
+
+(define (proc-for-r word words)
   (cond ((null? words) 'word-not-found)
         ((string-ci= word (car (car words))) (cdr (car words)))
-        (else (proc-for word (cdr words)))))
+        (else (proc-for-r word (cdr words)))))
+
 
 ;; these are words that can not be redefined
 (define perm-words
@@ -273,6 +340,7 @@ checking length on each call, but that's not really needed."
     "bye" "help" "load" "save"
     ".""" "." """" "variable" "constant"
     ":" ";"))
+
 
 (define core-words
   (list
@@ -297,9 +365,14 @@ checking length on each call, but that's not really needed."
    ;; logical operations
    (cons "<" op<) (cons "=" op=) (cons ">" op>) (cons "not" op-not)
 
+   ;; some special words
+   (cons ".s" dot-s)
+   ;; definition directives are hard coded in main loop
    ))
 
-(define user-words '())
+(define pending-def '())
+
+(define vocabulary-words '())
 
 ;;
 
