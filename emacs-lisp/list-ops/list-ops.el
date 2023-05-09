@@ -21,7 +21,7 @@
   (error "Delete this S-Expression and write your own implementation"))
 
 (defun list-append (list1 list2)
-  (error "Delete this S-Expression and write your own implementation"))
+  )
 
 (defun list-reverse (list)
   (error "Delete this S-Expression and write your own implementation"))
