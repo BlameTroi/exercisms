@@ -4,7 +4,7 @@
 LIBS = -lm
 
 ###
-CFLAGS  = -std=c99
+CFLAGS  = -std=c18
 CFLAGS += -g
 CFLAGS += -Wall
 CFLAGS += -Wextra
